@@ -1,0 +1,6 @@
+Builds/MacOSX/build/
+Builds/MacOSX/.derivedData/
+
+# Build artifacts
+Builds/
+*.a
