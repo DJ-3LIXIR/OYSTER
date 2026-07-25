@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="DV1ANf" name="Oyster" projectType="audioplug" useAppConfig="0"
+<JUCERPROJECT id="DV1ANf" name="Oyster" projectType="audioplug" version="1.1.0" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" bundleIdentifier="com.3lixirMusic.Oyster"
               companyWebsite="www.3lixirmusic.com" companyName="3LIXIR MUSIC"
               pluginVST3Category="Instrument" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">

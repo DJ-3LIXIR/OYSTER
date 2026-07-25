@@ -248,6 +248,12 @@ OysterAudioProcessorEditor::OysterAudioProcessorEditor (OysterAudioProcessor& p)
     // editor's size to whatever you need it to be.
     setSize (1260, 840);
     addAndMakeVisible (contentComponent);
+    // contentComponent covers the whole editor and holds every control as a
+    // child, but the preset sidebar is painted by the editor and handled by the
+    // editor's mouseDown().  Let contentComponent pass its OWN clicks through to
+    // the editor (so sidebar clicks reach mouseDown) while its child controls
+    // still receive theirs — otherwise the preset list is unclickable.
+    contentComponent.setInterceptsMouseClicks (false, true);
 
     // Nav button setup
     const int navH = 36;
@@ -689,7 +695,7 @@ OysterAudioProcessorEditor::OysterAudioProcessorEditor (OysterAudioProcessor& p)
     setupSynthKnob (lfoToDensityKnob,  lfoToDensityLabel,  "LFO>DEN");
     lfoToCutoffAtt   = std::make_unique<SliderAtt> (p.apvts, "lfoToCutoff",   lfoToCutoffKnob);
     lfoToPositionAtt = std::make_unique<SliderAtt> (p.apvts, "lfoToPosition", lfoToPositionKnob);
-    lfoToPitchAtt    = std::make_unique<SliderAtt> (p.apvts, "lfTooPitch",    lfoToPitchKnob);
+    lfoToPitchAtt    = std::make_unique<SliderAtt> (p.apvts, "lfoToPitch",    lfoToPitchKnob);
     lfoToDensityAtt  = std::make_unique<SliderAtt> (p.apvts, "lfoToDensity",  lfoToDensityKnob);
 
     // Modulation row 2 — ENV targets
@@ -1279,79 +1285,10 @@ OysterAudioProcessorEditor::~OysterAudioProcessorEditor()
 {
     stopTimer();
 
-    reverbKnob.setLookAndFeel  (nullptr);
-    shimmerKnob.setLookAndFeel (nullptr);
-    warmthKnob.setLookAndFeel  (nullptr);
-    driftKnob.setLookAndFeel   (nullptr);
-    bloomKnob.setLookAndFeel   (nullptr);
-    mixKnob.setLookAndFeel     (nullptr);
-    positionKnob.setLookAndFeel (nullptr);
-    sprayKnob.setLookAndFeel (nullptr);
-    grainSizeKnob.setLookAndFeel (nullptr);
-    densityKnob.setLookAndFeel (nullptr);
-    pitchScatterKnob.setLookAndFeel (nullptr);
-    panSpreadKnob.setLookAndFeel (nullptr);
-    morphKnob.setLookAndFeel (nullptr);
-    filterCutoffKnob.setLookAndFeel (nullptr);
-    filterResKnob.setLookAndFeel (nullptr);
-    filterDriveKnob.setLookAndFeel (nullptr);
-    filterEnvAmtKnob.setLookAndFeel  (nullptr);
-    filterLfoAmtKnob.setLookAndFeel  (nullptr);
-    filterKeyTrackKnob.setLookAndFeel (nullptr);
-    osc2WaveBox.setLookAndFeel   (nullptr);
-    subWaveBox.setLookAndFeel    (nullptr);
-    env4DestBox.setLookAndFeel   (nullptr);
-    osc2OctaveKnob.setLookAndFeel  (nullptr);
-    osc2SemiKnob.setLookAndFeel    (nullptr);
-    osc2FineKnob.setLookAndFeel    (nullptr);
-    osc2PhaseKnob.setLookAndFeel   (nullptr);
-    osc2MixKnob.setLookAndFeel     (nullptr);
-    osc2DetuneKnob.setLookAndFeel  (nullptr);
-    osc2PanKnob.setLookAndFeel     (nullptr);
-    subOctaveKnob.setLookAndFeel   (nullptr);
-    subMixKnob.setLookAndFeel      (nullptr);
-    subTuneKnob.setLookAndFeel     (nullptr);
-    subSemiKnob.setLookAndFeel     (nullptr);
-    subPanKnob.setLookAndFeel      (nullptr);
-    subPhaseKnob.setLookAndFeel    (nullptr);
-    masterVolumeKnob.setLookAndFeel    (nullptr);
-    masterPanKnob.setLookAndFeel       (nullptr);
-    masterTransposeKnob.setLookAndFeel (nullptr);
-    masterTuneKnob2.setLookAndFeel     (nullptr);
-    glideKnob.setLookAndFeel        (nullptr);
-    bendUpKnob.setLookAndFeel       (nullptr);
-    bendDownKnob.setLookAndFeel     (nullptr);
-    velSensKnob.setLookAndFeel      (nullptr);
-    octaveShiftKnob.setLookAndFeel  (nullptr);
-    stereoWidthKnob.setLookAndFeel  (nullptr);
-    masterTuneKnob.setLookAndFeel   (nullptr);
-    lfoToCutoffKnob.setLookAndFeel   (nullptr);
-    lfoToPositionKnob.setLookAndFeel (nullptr);
-    lfoToPitchKnob.setLookAndFeel    (nullptr);
-    lfoToDensityKnob.setLookAndFeel  (nullptr);
-    envToCutoffKnob.setLookAndFeel   (nullptr);
-    envToPositionKnob.setLookAndFeel (nullptr);
-    envToPitchKnob.setLookAndFeel    (nullptr);
-    envToAmpKnob.setLookAndFeel      (nullptr);
-    reverbSizeKnob.setLookAndFeel (nullptr);
-    reverbMixKnob.setLookAndFeel (nullptr);
-    chorusMixKnob.setLookAndFeel (nullptr);
-    wtOctaveKnob.setLookAndFeel (nullptr);
-    wtSemitoneKnob.setLookAndFeel (nullptr);
-    wtFineKnob.setLookAndFeel (nullptr);
-    wtPhaseKnob.setLookAndFeel (nullptr);
-    wtTiltKnob.setLookAndFeel (nullptr);
-    unisonVoicesKnob.setLookAndFeel (nullptr);
-    unisonDetuneKnob.setLookAndFeel (nullptr);
-    unisonSpreadKnob.setLookAndFeel (nullptr);
-    envAttackKnob.setLookAndFeel (nullptr);
-    envDecayKnob.setLookAndFeel (nullptr);
-    envSustainKnob.setLookAndFeel (nullptr);
-    envReleaseKnob.setLookAndFeel (nullptr);
-    lfoRateKnob.setLookAndFeel (nullptr);
-    lfoDepthKnob.setLookAndFeel (nullptr);
-    waveABox.setLookAndFeel (nullptr);
-    waveBBox.setLookAndFeel (nullptr);
+    // NOTE: no setLookAndFeel(nullptr) calls are needed here.  bioluminescentLAF
+    // is declared before every control that uses it, so it outlives them all and
+    // no control is ever left pointing at a destroyed LookAndFeel.  (Clearing
+    // them explicitly would just schedule ~73 needless repaints during teardown.)
 }
 
 //==============================================================================
@@ -1739,7 +1676,7 @@ void OysterAudioProcessorEditor::rebuildAllAttachments()
     // Modulation
     lfoToCutoffAtt   = std::make_unique<SliderAtt> (apvts, "lfoToCutoff",   lfoToCutoffKnob);
     lfoToPositionAtt = std::make_unique<SliderAtt> (apvts, "lfoToPosition", lfoToPositionKnob);
-    lfoToPitchAtt    = std::make_unique<SliderAtt> (apvts, "lfTooPitch",    lfoToPitchKnob);
+    lfoToPitchAtt    = std::make_unique<SliderAtt> (apvts, "lfoToPitch",    lfoToPitchKnob);
     lfoToDensityAtt  = std::make_unique<SliderAtt> (apvts, "lfoToDensity",  lfoToDensityKnob);
     envToCutoffAtt   = std::make_unique<SliderAtt> (apvts, "envToCutoff",   envToCutoffKnob);
     envToPositionAtt = std::make_unique<SliderAtt> (apvts, "envToPosition", envToPositionKnob);
@@ -2354,7 +2291,7 @@ void OysterAudioProcessorEditor::paintMatrixPage (juce::Graphics& g)
 
     // Parameter IDs for each cell: [source][dest]
     const juce::String paramIds[2][5] = {
-        { "lfoToCutoff", "lfoToPosition", "lfTooPitch", "lfoToDensity", "" },
+        { "lfoToCutoff", "lfoToPosition", "lfoToPitch", "lfoToDensity", "" },
         { "envToCutoff", "envToPosition", "envToPitch", "",             "envToAmp" }
     };
 

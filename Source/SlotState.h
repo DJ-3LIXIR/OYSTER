@@ -96,7 +96,7 @@ struct SlotState
     // ── Modulation ───────────────────────────────────────────────────────
     float lfoToCutoff    = 0.0f;
     float lfoToPosition  = 0.0f;
-    float lfoToPitch     = 0.0f;   // param ID is "lfTooPitch" (typo preserved)
+    float lfoToPitch     = 0.0f;
     float lfoToDensity   = 0.0f;
     float envToCutoff    = 0.0f;
     float envToPosition  = 0.0f;
@@ -217,7 +217,7 @@ struct SlotState
         // Modulation
         lfoToCutoff   = apvts.getRawParameterValue ("lfoToCutoff")->load();
         lfoToPosition = apvts.getRawParameterValue ("lfoToPosition")->load();
-        lfoToPitch    = apvts.getRawParameterValue ("lfTooPitch")->load();   // typo preserved
+        lfoToPitch    = apvts.getRawParameterValue ("lfoToPitch")->load();
         lfoToDensity  = apvts.getRawParameterValue ("lfoToDensity")->load();
         envToCutoff   = apvts.getRawParameterValue ("envToCutoff")->load();
         envToPosition = apvts.getRawParameterValue ("envToPosition")->load();
@@ -346,7 +346,7 @@ struct SlotState
         // Modulation
         setFloat ("lfoToCutoff",    lfoToCutoff);
         setFloat ("lfoToPosition",  lfoToPosition);
-        setFloat ("lfTooPitch",     lfoToPitch);   // typo preserved
+        setFloat ("lfoToPitch",     lfoToPitch);
         setFloat ("lfoToDensity",   lfoToDensity);
         setFloat ("envToCutoff",    envToCutoff);
         setFloat ("envToPosition",  envToPosition);

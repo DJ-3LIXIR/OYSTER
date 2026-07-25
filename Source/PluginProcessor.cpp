@@ -11,21 +11,6 @@
 #include <cmath>
 
 //==============================================================================
-static bool isRunningInValidationHost()
-{
-    const auto hostExe = juce::File::getSpecialLocation (juce::File::hostApplicationPath)
-                             .getFileNameWithoutExtension()
-                             .toLowerCase();
-
-    // AU validation can run through different host-side executables depending on OS/tooling.
-    return hostExe.contains ("auvaltool")
-        || hostExe.contains ("auval")
-        || hostExe.contains ("audiocomponentregistrar")
-        || hostExe.contains ("pluginval")
-        || hostExe.contains ("xctest");
-}
-
-//==============================================================================
 OysterAudioProcessor::OysterAudioProcessor()
     : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -65,7 +50,7 @@ OysterAudioProcessor::OysterAudioProcessor()
     masterPanParam    = apvts.getRawParameterValue ("masterPan");
     lfoToCutoffParam   = apvts.getRawParameterValue ("lfoToCutoff");
     lfoToPositionParam = apvts.getRawParameterValue ("lfoToPosition");
-    lfoToPitchParam    = apvts.getRawParameterValue ("lfTooPitch");
+    lfoToPitchParam    = apvts.getRawParameterValue ("lfoToPitch");
     lfoToDensityParam  = apvts.getRawParameterValue ("lfoToDensity");
     envToCutoffParam   = apvts.getRawParameterValue ("envToCutoff");
     envToPositionParam = apvts.getRawParameterValue ("envToPosition");
@@ -718,7 +703,7 @@ OysterAudioProcessor::createParameters()
     // Modulation — Row 1: LFO targets
     params.push_back (std::make_unique<juce::AudioParameterFloat> ("lfoToCutoff",    "LFO→Cutoff",    0.0f, 1.0f, 0.0f));
     params.push_back (std::make_unique<juce::AudioParameterFloat> ("lfoToPosition",  "LFO→Position",  0.0f, 1.0f, 0.0f));
-    params.push_back (std::make_unique<juce::AudioParameterFloat> ("lfTooPitch",     "LFO→Pitch",     0.0f, 1.0f, 0.0f));
+    params.push_back (std::make_unique<juce::AudioParameterFloat> ("lfoToPitch",     "LFO→Pitch",     0.0f, 1.0f, 0.0f));
     params.push_back (std::make_unique<juce::AudioParameterFloat> ("lfoToDensity",   "LFO→Density",   0.0f, 1.0f, 0.0f));
 
     // Modulation — Row 2: ENV targets
@@ -744,36 +729,11 @@ OysterAudioProcessor::createParameters()
 
 bool OysterAudioProcessor::hasEditor() const
 {
-    return ! isRunningInValidationHost();
+    return true;
 }
 
 juce::AudioProcessorEditor* OysterAudioProcessor::createEditor()
 {
-    if (isRunningInValidationHost())
-    {
-        struct ValidationEditor final : public juce::AudioProcessorEditor
-        {
-            explicit ValidationEditor (juce::AudioProcessor& p)
-                : juce::AudioProcessorEditor (p)
-            {
-                while (getNumChildComponents() > 0)
-                    removeChildComponent (getChildComponent (0));
-
-                setOpaque (true);
-                setSize (100, 100);
-            }
-
-            void paint (juce::Graphics& g) override
-            {
-                g.fillAll (juce::Colours::black);
-            }
-
-            void resized() override {}
-        };
-
-        return new ValidationEditor (*this);
-    }
-
     return new OysterAudioProcessorEditor (*this);
 }
 
